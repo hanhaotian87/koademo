@@ -1,0 +1,37 @@
+{
+  "appenders": {
+    "console": {
+      "type": "console"
+    },
+    "koa": {
+      "type": "console"
+    },
+    "systemLog": {
+      "type": "dateFile",
+      "filename": "logs/access.log",
+      "pattern": "-yyyy-MM-dd",
+      "alwaysIncludePattern": false
+    }
+  },
+  "categories": {
+    "default": {
+      "appenders": [
+        "console"
+      ],
+      "level": "debug"
+    },
+    "koa": {
+      "appenders": [
+        "koa"
+      ],
+      "level": "info"
+    },
+    "system": {
+      "appenders": [
+        "console",
+        "systemLog"
+      ],
+      "level": "debug"
+    }
+  }
+}

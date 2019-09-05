@@ -1,0 +1,30 @@
+{
+  "appenders": {
+    "console": {
+      "type": "console"
+    },
+    "koa": {
+      "type": "console"
+    },
+    "app": {
+      "type": "dateFile",
+      "filename": "logs/access.log",
+      "daysToKeep": 14,
+      "layout": {
+        "type": "pattern",
+        "pattern": "[%d] (pid:%z) [%p] %c - %m"
+      }
+    }
+  },
+  "categories": {
+    "default": {
+      "appenders": [
+        "console",
+        "app"
+      ],
+      "level": "trace"
+    }
+  },
+  "pm2": true,
+  "replaceConsole": true
+}

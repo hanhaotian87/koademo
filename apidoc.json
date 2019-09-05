@@ -1,0 +1,21 @@
+{
+    "name": "EMMS API 文档", 
+    "version": "1.0.0",
+    "description": "这是工程管理和服务系统API文档",
+    "title": "EMMS API",
+    "url" : "https://dev.3jyun.com/emms",
+    "header": {
+        "title": "header"
+    },
+    "footer": {
+        "title": "footer"
+    },
+    "order": [
+        "Error",
+        "Define",
+        "PostTitleAndError",
+        "PostError"
+    ],
+    "pkg-cmd":"apidoc -i routes/ -o apidoc/api/"
+    
+  }

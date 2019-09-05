@@ -1,0 +1,51 @@
+{
+    "name": "pmsys", // 应用名称
+    "script": "./bin/cluster.js", // 实际启动脚本
+    "cwd": "./", // 当前工作路径
+    "watch": [ // 监控变化的目录，一旦变化，自动重启
+       /*  "bin",
+        "routes",
+        "config",
+        "core",
+        "views",
+        "app.js",
+        "pm2start.json",
+        "package.json"  */
+    ],
+    "ignore_watch": [ // 从监控目录中排除
+        "bin",
+        "routes",
+        "config",
+        "core",
+        "views",
+        "app.js",
+        "pm2start.json",
+        "package.json" ,
+        "node_modules",
+        "logs",
+        "public",
+        ".git",
+        "apidoc",
+        "data",
+        "download",
+        "upload",
+        "*.rdb"
+    ],
+    "watch_options": {
+        "followSymlinks": false
+    },
+    "error_file": "./logs/app-err.log", // 错误日志路径
+    "out_file": "./logs/app-out.log", // 普通日志路径
+    "env": {
+        "NODE_ENV": "production",
+        "REMOTE_ADDR": "http://api.3jyun.com/"
+      },
+      "env_dev": {
+        "NODE_ENV": "development",
+        "REMOTE_ADDR": "http://dev.3jyun.com/"
+      },
+      "env_test": {
+        "NODE_ENV": "test",
+        "REMOTE_ADDR": "http://localhost:3000/"
+      }
+}
