@@ -22,7 +22,7 @@ describe('koademo Api /login', function () {
       })
   })
   it('koademo Api /json', function (done) {
-    request.get('/json').expect(200).end((err, res) => {
+    request.get('/json').set('token', token).expect(200).end((err, res) => {
       if (err) throw err
       done()
     })
