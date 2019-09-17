@@ -8,8 +8,8 @@ const logger = require('../core/common/logger').logger(__filename)
 const data = require('../testData/data')
 
 var token = ''
-describe('koademo Api /login', function () {
-  before('check http proxy ....', function (done) {
+describe('koademo Api', function () {
+  before('koademo Api /login', function (done) {
     // console.log('userid='+user.userid +'&password='+ md5(user.userid + md5(user.password)));
     request.post('/login')
       .send('username=' + data.user.username + '&password=' + cipher.md5(data.user.password)) // x-www-form-urlencoded upload
@@ -24,6 +24,9 @@ describe('koademo Api /login', function () {
   it('koademo Api /json', function (done) {
     request.get('/json').set('token', token).expect(200).end((err, res) => {
       if (err) throw err
+      logger.info('res ' + JSON.stringify(JSON.parse(res.text)))
+      let data = JSON.parse(res.text)
+      data.title.should.equal('koa2 json')
       done()
     })
   })

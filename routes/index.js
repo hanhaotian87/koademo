@@ -7,6 +7,7 @@ const userManager = require('../core/manager/UserManager')
 const zipUtil = require('../core/utils/zipUtil')
 const path = require('path')
 let MobileDetect = require('mobile-detect')
+const clientHttp = require('../config/clienthttp')
 
 router.get('/json', async (ctx, next) => {
   ctx.body = {
@@ -14,11 +15,12 @@ router.get('/json', async (ctx, next) => {
   }
 })
 
-router.post('/testPost', verify, testPost)
+router.post('/testpost', /* verify, */ testPost)
 
 async function testPost (ctx, next) {
   let postBody = ctx.request.body
-  logger.info(JSON.stringify(postBody))
+  let query = ctx.query
+  logger.info(JSON.stringify(postBody) + ' ' + JSON.stringify(query))
   ctx.body = { retCode: ErrorCodes.OK }
 }
 
@@ -60,6 +62,12 @@ router.post('/login', async (ctx, next) => {
   } catch (error) {
     ctx.throw(500, error)
   }
+})
+
+router.get('/clientGetTest', async (ctx, next) => {
+  let clientGet = clientHttp.clientGet
+  let result = await clientGet('/testGet', { a: 1 })
+  ctx.body = { retCode: ErrorCodes.OK, data: result }
 })
 
 module.exports = router
