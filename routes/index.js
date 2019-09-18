@@ -7,7 +7,9 @@ const userManager = require('../core/manager/UserManager')
 const zipUtil = require('../core/utils/zipUtil')
 const path = require('path')
 let MobileDetect = require('mobile-detect')
-const clientHttp = require('../config/clienthttp')
+const clientHttp = require('../modules/clienthttp')
+const axios = require('../modules/axiosClientA')
+const querystring = require('querystring')
 
 router.get('/json', async (ctx, next) => {
   ctx.body = {
@@ -70,4 +72,19 @@ router.get('/clientGetTest', async (ctx, next) => {
   ctx.body = { retCode: ErrorCodes.OK, data: result }
 })
 
+router.get('/lottery', async (ctx, next) => { // nodejs 后台做httpclient ,使用axios
+  let result = await axios.get('/lottery/types', {
+    params: {
+      key: '135d5663d7eaeef8d07db06af92903ed'
+    }
+  })
+  logger.info(JSON.stringify(result.data))
+  ctx.body = { retCode: ErrorCodes.OK, data: result.data.result }
+})
+
+router.post('/lottery', async (ctx, next) => { // nodejs 后台做httpclient ,使用axios
+  let result = await axios.post('/lottery/types', querystring.stringify({ key: '135d5663d7eaeef8d07db06af92903ed' }))
+  logger.info(result.data.reason)
+  ctx.body = { retCode: ErrorCodes.OK, data: result.data.result }
+})
 module.exports = router
