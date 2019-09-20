@@ -15,7 +15,7 @@ router.get('/list', /* verify, */ async function (ctx, next) {
     logger.info('list start')
     let result = await mUser.list()
     logger.info('result :' + JSON.stringify(result))
-    ctx.body = { retCode: ErrorCodes.OK, result: result }
+    ctx.body = { code: ErrorCodes.OK, result: result }
   } catch (error) {
     ctx.throw(500, error)
   }
@@ -25,7 +25,7 @@ router.patch('/change', /* verify, */ async function (ctx, next) {
   let text = ctx.request.body
   try {
     let result = await mUser.change(text)
-    ctx.body = { retCode: ErrorCodes.OK, result: result }
+    ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }
@@ -35,8 +35,8 @@ router.post('/add', /* verify, */async function (ctx, next) {
   let text = ctx.request.body
   try {
     let result = await mUser.add(text)
-    
-    ctx.body = { retCode: ErrorCodes.OK, result: result }
+
+    ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }

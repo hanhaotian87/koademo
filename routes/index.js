@@ -23,7 +23,7 @@ async function testPost (ctx, next) {
   let postBody = ctx.request.body
   let query = ctx.query
   logger.info(JSON.stringify(postBody) + ' ' + JSON.stringify(query))
-  ctx.body = { retCode: ErrorCodes.OK }
+  ctx.body = { code: ErrorCodes.OK, message: 'successful' }
 }
 
 router.get('/testZip', async (ctx, next) => {
@@ -33,7 +33,7 @@ router.get('/testZip', async (ctx, next) => {
   let dst = path.join(rootDir, 'logs', 'logs.zip')
   let s = await zipUtil.zip(src, dst)
   logger.info('s ' + s)
-  ctx.body = { retCode: ErrorCodes.OK, info: s }
+  ctx.body = { code: ErrorCodes.OK, data: s, message: 'successful' }
 })
 
 router.get('/testUnZip', async (ctx, next) => {
@@ -43,7 +43,7 @@ router.get('/testUnZip', async (ctx, next) => {
   let dst = path.join(rootDir, 'logs', 'log')
   let s = await zipUtil.unzip(src, dst)
   logger.info('s ' + s)
-  ctx.body = { retCode: ErrorCodes.OK, info: s }
+  ctx.body = { code: ErrorCodes.OK, data: s, message: 'successful' }
 })
 
 router.post('/login', async (ctx, next) => {
@@ -57,9 +57,9 @@ router.post('/login', async (ctx, next) => {
     let result = await userManager.login(username, password, deviceType)
     logger.info('login result :' + JSON.stringify(result))
     if (result) {
-      ctx.body = { retCode: ErrorCodes.OK, result: result }
+      ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
     } else {
-      ctx.throw(400, { retCode: ErrorCodes.ERROR_LOGIN, message: '账号和密码不匹配' })
+      ctx.throw(400, { code: ErrorCodes.ERROR_LOGIN, message: '账号和密码不匹配' })
     }
   } catch (error) {
     ctx.throw(500, error)
@@ -69,7 +69,7 @@ router.post('/login', async (ctx, next) => {
 router.get('/clientGetTest', async (ctx, next) => {
   let clientGet = clientHttp.clientGet
   let result = await clientGet('/testGet', { a: 1 })
-  ctx.body = { retCode: ErrorCodes.OK, data: result }
+  ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
 })
 
 router.get('/lottery', async (ctx, next) => { // nodejs 后台做httpclient ,使用axios
@@ -79,19 +79,19 @@ router.get('/lottery', async (ctx, next) => { // nodejs 后台做httpclient ,使
     }
   })
   logger.info(JSON.stringify(result.data))
-  ctx.body = { retCode: ErrorCodes.OK, data: result.data.result }
+  ctx.body = { code: ErrorCodes.OK, data: result.data.result }
 })
 
 router.post('/lottery', async (ctx, next) => { // nodejs 后台做httpclient ,使用axios
   let result = await axios.post('/lottery/types', querystring.stringify({ key: '135d5663d7eaeef8d07db06af92903ed' }))
   logger.info(result.data.reason)
-  ctx.body = { retCode: ErrorCodes.OK, data: result.data.result }
+  ctx.body = { code: ErrorCodes.OK, data: result.data.result }
 })
 router.get('/postgresqlGet', async (ctx, next) => {
   try {
     var result = await pguser.list()
     logger.info(result.rows[0])
-    ctx.body = { retCode: ErrorCodes.OK, result: result.rows }
+    ctx.body = { code: ErrorCodes.OK, data: result.rows, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }
@@ -101,7 +101,7 @@ router.get('/postgresqlGetById', async (ctx, next) => {
   try {
     var result = await pguser.getById(1)
     logger.info(result.rows[0])
-    ctx.body = { retCode: ErrorCodes.OK, result: result.rows }
+    ctx.body = { code: ErrorCodes.OK, data: result.rows, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }
@@ -111,7 +111,7 @@ router.post('/postgresqlAdd', async (ctx, next) => {
   try {
     var result = await pguser.add({ name: 'xxx', age: 19 })
     logger.info(result)
-    ctx.body = { retCode: ErrorCodes.OK, result: result.rows }
+    ctx.body = { code: ErrorCodes.OK, data: result.rows, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }
@@ -121,7 +121,7 @@ router.patch('/postgresqlUpdate', async (ctx, next) => {
   try {
     var result = await pguser.change({ name: 'xxxa', age: 19, id: 2 })
     logger.info(result)
-    ctx.body = { retCode: ErrorCodes.OK, result: result }
+    ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }

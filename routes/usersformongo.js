@@ -31,27 +31,27 @@ router.delete('/:id', /* verify, */ deleteUser)
  *       "password":"pwdaaaaaa",
  *       "status":1,
  *     }
- * @apiSuccess {Number} retCode
+ * @apiSuccess {Number} code
  * @apiSuccess {String} message
  * @apiSuccess {ObjectId} _id 用户ID
  * @apiSuccessExample Success-Response:
  * HTTP/1.1 200 OK
  * {
- * "retCode":0,
+ * "code":0,
  * "_id":"5caabc0847d72c1e0c6d4e64"
  * }
  *
  * @apiSuccessExample Error-Response:
  * HTTP/1.1 400 用户已存在
  *     {
- *       "retCode":106,
+ *       "code":106,
  *       "message":"用户已存在"
  *     }
  *
  * @apiSuccessExample Error-Response:
  *     HTTP/1.1 400 电话号码非法
  *     {
- *       "retCode":110,
+ *       "code":110,
  *       "message":"电话号码非法"
  *     }
  */
@@ -70,7 +70,7 @@ async function addUser (ctx, next) {
   try {
     let result = await userManager.addUser(newUser)
     logger.info('result : ' + JSON.stringify(result))
-    ctx.body = { retCode: ErrorCodes.OK, id: result }
+    ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }
@@ -83,7 +83,7 @@ async function getUser (ctx, next) {
     let result = await userManager.getUser(id)
     logger.info('getUser end ' + new Date().getMilliseconds())
     logger.info('result : ' + JSON.stringify(result))
-    ctx.body = { retCode: ErrorCodes.OK, result: result }
+    ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }
@@ -95,7 +95,7 @@ async function updateUser (ctx, next) {
   try {
     let result = await userManager.updateUser(id, updateSet)
     logger.info('result : ' + JSON.stringify(result))
-    ctx.body = { retCode: ErrorCodes.OK, result: result }
+    ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }
@@ -106,7 +106,7 @@ async function deleteUser (ctx, next) {
   try {
     let result = await userManager.deleteUser(id)
     logger.info('result : ' + JSON.stringify(result))
-    ctx.body = { retCode: ErrorCodes.OK, result: result }
+    ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }
