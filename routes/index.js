@@ -10,7 +10,7 @@ let MobileDetect = require('mobile-detect')
 const clientHttp = require('../modules/clienthttp')
 const axios = require('../modules/axiosClientA')
 const querystring = require('querystring')
-
+const pguser = require('../core/models/pguser')
 router.get('/json', async (ctx, next) => {
   ctx.body = {
     title: 'koa2 json'
@@ -86,5 +86,44 @@ router.post('/lottery', async (ctx, next) => { // nodejs 后台做httpclient ,�
   let result = await axios.post('/lottery/types', querystring.stringify({ key: '135d5663d7eaeef8d07db06af92903ed' }))
   logger.info(result.data.reason)
   ctx.body = { retCode: ErrorCodes.OK, data: result.data.result }
+})
+router.get('/postgresqlGet', async (ctx, next) => {
+  try {
+    var result = await pguser.list()
+    logger.info(result.rows[0])
+    ctx.body = { retCode: ErrorCodes.OK, result: result.rows }
+  } catch (error) {
+    ctx.throw(500, error)
+  }
+})
+
+router.get('/postgresqlGetById', async (ctx, next) => {
+  try {
+    var result = await pguser.getById(1)
+    logger.info(result.rows[0])
+    ctx.body = { retCode: ErrorCodes.OK, result: result.rows }
+  } catch (error) {
+    ctx.throw(500, error)
+  }
+})
+
+router.post('/postgresqlAdd', async (ctx, next) => {
+  try {
+    var result = await pguser.add({ name: 'xxx', age: 19 })
+    logger.info(result)
+    ctx.body = { retCode: ErrorCodes.OK, result: result.rows }
+  } catch (error) {
+    ctx.throw(500, error)
+  }
+})
+
+router.patch('/postgresqlUpdate', async (ctx, next) => {
+  try {
+    var result = await pguser.change({ name: 'xxxa', age: 19, id: 2 })
+    logger.info(result)
+    ctx.body = { retCode: ErrorCodes.OK, result: result }
+  } catch (error) {
+    ctx.throw(500, error)
+  }
 })
 module.exports = router

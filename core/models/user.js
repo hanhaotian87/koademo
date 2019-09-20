@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-var db_pool = require('../../config/db_pool')
+var db_pool = require('../../config/mysqldb_pool')
 const logger = require('../common/logger').logger(__filename)
 var count = 0
 

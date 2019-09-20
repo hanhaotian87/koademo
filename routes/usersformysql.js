@@ -35,6 +35,7 @@ router.post('/add', /* verify, */async function (ctx, next) {
   let text = ctx.request.body
   try {
     let result = await mUser.add(text)
+    
     ctx.body = { retCode: ErrorCodes.OK, result: result }
   } catch (error) {
     ctx.throw(500, error)
