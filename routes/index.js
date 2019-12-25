@@ -11,6 +11,12 @@ const clientHttp = require('../modules/clienthttp')
 const axios = require('../modules/axiosClientA')
 const querystring = require('querystring')
 const pguser = require('../core/models/pguser')
+router.prefix('/indexpre')
+router.get('*', async (ctx, next) => {
+  logger.info('index * 1')
+  next()
+  logger.info('index * 2')
+})
 router.get('/json', async (ctx, next) => {
   ctx.body = {
     title: 'koa2 json'
@@ -126,4 +132,26 @@ router.patch('/postgresqlUpdate', async (ctx, next) => {
     ctx.throw(500, error)
   }
 })
+
+router.get('/path', async (ctx, next) => {
+  logger.info('url ' + ctx.url + '  href :' + ctx.href + '  ' + ctx.protocol)
+  ctx.body = {
+    title: 'koa2 path'
+  }
+})
+
+router.get('/path/id', async (ctx, next) => {
+  ctx.body = {
+    title: 'koa2 path2 id'
+  }
+})
+
+router.get('path:id', '/path/:id', async (ctx, next) => {
+  let id = ctx.params.id
+  logger.info('router path :' + ctx.routerName + '  ' + ctx.captures + ' params ' + JSON.stringify(ctx.params))
+  ctx.body = {
+    title: 'koa2 path1 ' + id
+  }
+})
+
 module.exports = router

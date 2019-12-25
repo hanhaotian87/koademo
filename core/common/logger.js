@@ -11,6 +11,7 @@ const LOG4JS_PRD_CONF = 'log4js.json'
 
 // log4js 配置段
 function setupLog4js () {
+  console.log('setupLog4js : ' + process.env.NODE_ENV)
   const fileName = (process.env.NODE_ENV === 'production')
     ? LOG4JS_PRD_CONF
     : LOG4JS_DEV_CONF
@@ -27,6 +28,7 @@ exports.logger = function (category) {
   let c = category
   if (c && c.substr(0, appBase.length) === appBase) {
     c = path.relative(appBase, c)
+    c = c + '[' + process.pid + ']'
   }
   return log4js.getLogger(c)
 } // 记录所有应用级别的日志

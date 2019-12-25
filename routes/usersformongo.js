@@ -4,6 +4,9 @@ const userManager = require('../core/manager/UserManager')
 const logger = require('../core/common/logger').logger(__filename)
 const ErrorCodes = require('../core/common/ErrorCodes')
 const verify = require('./signverification')
+const base = require('../core/utils/base')
+const fs = require('fs')
+const path = require('path')
 
 router.prefix('/users')
 
@@ -83,6 +86,8 @@ async function getUser (ctx, next) {
     let result = await userManager.getUser(id)
     logger.info('getUser end ' + new Date().getMilliseconds())
     logger.info('result : ' + JSON.stringify(result))
+
+    testBuffer()
     ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
@@ -110,6 +115,30 @@ async function deleteUser (ctx, next) {
   } catch (error) {
     ctx.throw(500, error)
   }
+}
+
+function testBuffer () {
+  let handPath = path.join(__dirname, 'M001HAND.BIN')
+  fs.readFile(handPath, function (err, data) {
+    logger.info('err ' + err)
+    if (!err) {
+      let buf = data
+      let len = buf.length
+
+      logger.info('len : ' + len)
+      let headerdata = buf.slice(0, 32)
+      logger.info('header : ' + headerdata.toString())
+      let hands = []
+      let dataBuf = buf.slice(32)
+      let size = dataBuf.length / 4
+      logger.info('readHANDBin size = ' + dataBuf.length + '  ' + base.buffToBoolean(dataBuf[0]))
+      let a = []
+      for (let i = 0; i < 2; i++) {
+        a[i] = dataBuf[i + 4]
+      }
+      logger.info('a ' + base.byteArrayToInt(a) + '  ' + base.byteToInt(a[0]))
+    }
+  })
 }
 
 module.exports = router

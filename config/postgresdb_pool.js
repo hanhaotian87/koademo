@@ -11,7 +11,7 @@ const config = {
   port: 5432,
   database: 'test1',
   ssl: false,
-  max: 3 // default 10
+  max: 15 // default 10
 }
 
 const pool = new Pool(config)

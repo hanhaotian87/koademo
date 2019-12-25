@@ -4,6 +4,7 @@ const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
+const Router = require('koa-router')
 const logger = require('./core/common/logger').logger(__filename)
 const path = require('path')
 
@@ -30,17 +31,22 @@ app.use(views(path.join(__dirname, '/views'), {
 // logger
 app.use(async (ctx, next) => {
   const start = new Date()
+  // logger.info('path ' + ctx.matched[0].path + '  mathod : ' + ctx.mathod)
   await next()
   const ms = new Date() - start
   logger.info(`${ctx.method} ${ctx.url} - ${ms}ms`)
+  logger.info(ctx.path + '  ' + ctx.href)
 })
 
 app.use(error)
 
 // routes
-app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
-app.use(usermysql.routes(), usermysql.allowedMethods())
+let router = new Router({ prefix: '/prefix' })
+router.use(index.routes(), index.allowedMethods())
+router.use(users.routes(), users.allowedMethods())
+router.use(usermysql.routes(), usermysql.allowedMethods())
+app.use(router.routes(), router.allowedMethods())
+// logger.info('index stack ' + JSON.stringify(router.stack))
 
 // error-handling
 app.on('error', (err, ctx) => {
