@@ -28,7 +28,7 @@ exports.logger = function (category) {
   let c = category
   if (c && c.substr(0, appBase.length) === appBase) {
     c = path.relative(appBase, c)
-    c = c + '[' + process.pid + ']'
+    c = '[' + process.pid + '] [rss ' + parseInt(process.memoryUsage().rss / 1024) + ']' + c
   }
   return log4js.getLogger(c)
 } // 记录所有应用级别的日志

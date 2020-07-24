@@ -11,10 +11,14 @@ const clientHttp = require('../modules/clienthttp')
 const axios = require('../modules/axiosClientA')
 const querystring = require('querystring')
 const pguser = require('../core/models/pguser')
+const fs = require('fs')
+const zlib = require('zlib')
+const StreamZip = require('node-stream-zip')
+const globleConfig = require('../config/global_config')
 router.prefix('/indexpre')
 router.get('*', async (ctx, next) => {
   logger.info('index * 1')
-  next()
+  await next()
   logger.info('index * 2')
 })
 router.get('/json', async (ctx, next) => {
@@ -49,7 +53,38 @@ router.get('/testUnZip', async (ctx, next) => {
   let dst = path.join(rootDir, 'logs', 'log')
   let s = await zipUtil.unzip(src, dst)
   logger.info('s ' + s)
+
   ctx.body = { code: ErrorCodes.OK, data: s, message: 'successful' }
+})
+
+router.get('/testNodeStreamZipUnZip', async (ctx, next) => {
+  let rootDir = path.dirname(__dirname)
+  let zipPath = path.join(rootDir, 'logs', 'logs.zip')
+  let newPath = path.join(rootDir, 'logs', 'log')
+  const zip = new StreamZip({
+    file: zipPath,
+    storeEntries: true
+  })
+
+  zip.on('error', (err) => {
+    logger.info(' err:' + err)
+  })
+
+  zip.on('ready', () => {
+    if (!fs.existsSync(newPath)) {
+      fs.mkdirSync(newPath)
+    }
+    zip.extract(null, newPath, (err, count) => {
+      logger.info(err ? 'Extract error' : `Extracted ${count} entries`)
+      zip.close()
+      if (err) {
+        logger.info(' err:' + err)
+      } else {
+        logger.info('extract finish ')
+      }
+    })
+  })
+  ctx.body = { retCode: 0 }
 })
 
 router.post('/login', async (ctx, next) => {
@@ -151,6 +186,49 @@ router.get('path:id', '/path/:id', async (ctx, next) => {
   logger.info('router path :' + ctx.routerName + '  ' + ctx.captures + ' params ' + JSON.stringify(ctx.params))
   ctx.body = {
     title: 'koa2 path1 ' + id
+  }
+})
+var _mkdirsSync = function (dirname) {
+  // logger.info('创建文件夹：'+dirname);
+  if (fs.existsSync(dirname)) {
+    return true
+  } else {
+    if (_mkdirsSync(path.dirname(dirname))) {
+      fs.mkdirSync(dirname)
+      return true
+    }
+  }
+}
+var copyFileSync = function (src, destPath, filename) {
+  _mkdirsSync(destPath)
+  let newPath = path.join(destPath, filename)
+  fs.copyFileSync(src, newPath)
+}
+router.get('/fscopy', async (ctx, next) => {
+  copyFileSync('./logs/logs1.zip', './logs/log', '1.zip')
+  ctx.body = {
+    title: 'fscopy'
+  }
+})
+
+router.get('/testcpu', async (ctx, next) => {
+  ctx.body = {
+    title: 'testcpu'
+  }
+  setTimeout(function () {
+    logger.info('1 min end')
+  }, 60 * 1000)
+})
+
+router.get('/zlib', async (ctx, next) => {
+  // copyFileSync('./logs/logs1.zip', './logs/log', '1.zip')
+  let zipPath = path.join(globleConfig.getRootDir(), 'logs', 'logs.zip')
+  logger.info('zipPath:' + zipPath)
+  let zipBuffer = fs.readFileSync(zipPath)
+  let result = zlib.unzipSync(zipBuffer)
+  logger.info('result :' + JSON.stringify(result))
+  ctx.body = {
+    title: result
   }
 })
 
