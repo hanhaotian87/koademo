@@ -4,7 +4,7 @@ module.exports = {
   host: 'localhost',
   user: 'han',
   password: '1234',
-  database: 'cs7'
+  database: 'test'
 }
 
 // Error too many connections 解决办法，修改windows C:\ProgramData\MySQL\MySQL Server 5.7\my.ini  linux /etc/my.conf

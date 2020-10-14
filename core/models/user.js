@@ -11,7 +11,7 @@ var User = {
     let dbPool = await db_pool()
     let result = ''
     try {
-      result = await dbPool.query('SELECT * FROM user')
+      result = await dbPool.query('SELECT username FROM user')
     } catch (error) {
       logger.error('list :' + error)
     }

@@ -15,6 +15,8 @@ const fs = require('fs')
 const zlib = require('zlib')
 const StreamZip = require('node-stream-zip')
 const globleConfig = require('../config/global_config')
+const varManager = require('../core/manager/TestVarManager')
+
 router.prefix('/indexpre')
 router.get('*', async (ctx, next) => {
   logger.info('index * 1')
@@ -230,6 +232,13 @@ router.get('/zlib', async (ctx, next) => {
   ctx.body = {
     title: result
   }
+})
+
+router.get('/testVar', async (ctx, next) => {
+  varManager.a = 5
+  let c = varManager.b
+  c()
+  ctx.body = { a: 'aa' }
 })
 
 module.exports = router
