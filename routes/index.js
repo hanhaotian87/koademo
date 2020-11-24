@@ -241,4 +241,9 @@ router.get('/testVar', async (ctx, next) => {
   ctx.body = { a: 'aa' }
 })
 
+router.get('/testUpdateUser', async (ctx, next) => {
+  userManager.updateUser('5c77a2679907b953f833d9f2', { 'location.text': '123456' })
+  ctx.body = { a: 'aa' }
+})
+
 module.exports = router

@@ -10,8 +10,11 @@ var User = {
     logger.info('sql list start ' + count)
     let dbPool = await db_pool()
     let result = ''
+    let ids = '2,3'
     try {
-      result = await dbPool.query('SELECT username FROM user')
+      if (ids) {
+        result = await dbPool.query('SELECT username FROM user where id in (' + ids + ')')
+      }
     } catch (error) {
       logger.error('list :' + error)
     }

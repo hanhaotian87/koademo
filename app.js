@@ -13,6 +13,7 @@ const index = require('./routes/index')
 const users = require('./routes/usersformongo')
 const usermysql = require('./routes/usersformysql')
 const error = require('./routes/error')
+const lusca = require('koa-lusca')
 
 // error handler
 onerror(app)
@@ -35,6 +36,7 @@ app.use(cors({ origin: function (ctx) { // 允许跨域请求，
 maxAge: 3600 // method options 缓存 1小时，以免每次都是两个请求
 }))
 
+app.use(lusca.xssProtection(true))
 // logger
 app.use(async (ctx, next) => {
   const start = new Date()
