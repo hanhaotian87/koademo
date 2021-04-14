@@ -29,7 +29,7 @@
     "koa-views": "^5.2.1",
     "koa2-cors": "^2.0.6",
     "mobile-detect": "^1.4.3",
-    "mongoose": "^5.4.16",
+    "mongoose": "^5.12.3",
     "mysql": "^2.17.1",
     "node-stream-zip": "^1.11.2",
     "pg": "^7.12.1",
