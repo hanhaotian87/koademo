@@ -6,6 +6,7 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const Router = require('koa-router')
 const logger = require('./core/common/logger').logger(__filename)
+const accessLogger = require('./core/common/logger').accessLogger
 const path = require('path')
 const cors = require('koa2-cors')
 
@@ -19,22 +20,30 @@ const lusca = require('koa-lusca')
 onerror(app)
 
 // middlewares
-app.use(bodyparser({
-  enableTypes: ['json', 'form', 'text']
-}))
+app.use(
+  bodyparser({
+    enableTypes: ['json', 'form', 'text'],
+  })
+)
 app.use(json())
-// app.use(accessLogger())
+app.use(accessLogger)
 app.use(require('koa-static')(path.join(__dirname, '/public')))
 
-app.use(views(path.join(__dirname, '/views'), {
-  extension: 'pug'
-}))
+app.use(
+  views(path.join(__dirname, '/views'), {
+    extension: 'pug',
+  })
+)
 
-app.use(cors({ origin: function (ctx) { // 允许跨域请求，
-  return '*' // 允许来自所有域名请求
-},
-maxAge: 3600 // method options 缓存 1小时，以免每次都是两个请求
-}))
+app.use(
+  cors({
+    origin: function (ctx) {
+      // 允许跨域请求，
+      return '*' // 允许来自所有域名请求
+    },
+    maxAge: 3600, // method options 缓存 1小时，以免每次都是两个请求
+  })
+)
 
 app.use(lusca.xssProtection(true))
 // logger

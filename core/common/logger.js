@@ -21,7 +21,19 @@ function setupLog4js() {
 
 setupLog4js()
 
-exports.accessLogger = () => log4js.koaLogger(log4js.getLogger('access')) // 记录所有访问级别的日志
+// 记录所有访问级别的日志
+exports.accessLogger = async (ctx, next) => {
+  log4js
+    .getLogger('access')
+    .info(
+      `[men:${process.memoryUsage().rss}]-${ctx.request.hostname}- ${
+        ctx.request.protocol
+      } ${ctx.method} ${ctx.request.host}${ctx.request.path} ${ctx.get(
+        'User-Agent'
+      )}`
+    )
+  await next()
+}
 exports.logger = function (category) {
   let c = category
   if (c && c.substr(0, appBase.length) === appBase) {
