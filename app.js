@@ -6,7 +6,6 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const Router = require('koa-router')
 const logger = require('./core/common/logger').logger(__filename)
-const accessLogger = require('./core/common/logger').accessLogger
 const path = require('path')
 const cors = require('koa2-cors')
 
@@ -26,7 +25,7 @@ app.use(
   })
 )
 app.use(json())
-app.use(accessLogger)
+// app.use(accessLogger)
 app.use(require('koa-static')(path.join(__dirname, '/public')))
 
 app.use(

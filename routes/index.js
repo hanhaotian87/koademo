@@ -1,7 +1,5 @@
 const router = require('koa-router')()
-const logger = require('../core/common/mLogger').logger(__filename)
-// const MemLogger = require('../core/common/MemLogger')
-// const mLogger = new MemLogger(__filename)
+const logger = require('../core/common/logger').logger(__filename)
 const verify = require('./signverification')
 const ErrorCodes = require('../core/common/ErrorCodes')
 const commonUtil = require('../core/common/commonUtil')
