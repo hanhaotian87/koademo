@@ -1,5 +1,7 @@
 const router = require('koa-router')()
-const logger = require('../core/common/logger').logger(__filename)
+const logger = require('../core/common/mLogger').logger(__filename)
+// const MemLogger = require('../core/common/MemLogger')
+// const mLogger = new MemLogger(__filename)
 const verify = require('./signverification')
 const ErrorCodes = require('../core/common/ErrorCodes')
 const commonUtil = require('../core/common/commonUtil')
@@ -24,9 +26,14 @@ router.get('*', async (ctx, next) => {
   logger.info('index * 2')
 })
 router.get('/json', async (ctx, next) => {
+  logger.debug('test json 0')
+  // mLogger.info('test json 1')
+  let a = {kk:12345,bb:'test'}
   ctx.body = {
     title: 'koa2 json'
   }
+  logger.info('test:' + JSON.stringify(a))
+  // mLogger.info('test json 2')
 })
 
 router.post('/testpost', /* verify, */ testPost)
