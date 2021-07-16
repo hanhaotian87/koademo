@@ -44,7 +44,7 @@
     "pm2-logrotate": "^2.6.0",
     "promise-mysql": "^4.1.0",
     "pug": "^2.0.0-rc.1",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "unzipper": "^0.10.1"
   },
   "devDependencies": {
