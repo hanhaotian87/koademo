@@ -6,8 +6,11 @@ var logger = require('../common/logger').logger(__filename)
 const ErrorCode = require('../common/ErrorCodes')
 const commonUtil = require('../common/commonUtil')
 
-async function login (username, password, clientType) {
-  let user = await UserDao.findOne({ username: username, password: password }).exec()
+async function login(username, password, clientType) {
+  let user = await UserDao.findOne({
+    username: username,
+    password: password,
+  }).exec()
   if (user) {
     var newToken = commonUtil.createToken(username, user.role, user._id)
     logger.info('newToken = ' + newToken)
@@ -15,7 +18,7 @@ async function login (username, password, clientType) {
       usreId: user._id,
       username: user.username,
       role: user.role,
-      token: newToken
+      token: newToken,
     }
     return result
   } else {
@@ -23,11 +26,11 @@ async function login (username, password, clientType) {
   }
 }
 
-async function addUser (userItem) {
+async function addUser(userItem) {
   let user = await UserDao.findOne({ telno: userItem.username }).exec()
   logger.info('user:' + user + ' ' + JSON.stringify(userItem))
   if (user == null) {
-    userItem.create_time = Date()// commonUtil.dateFormat(Date())
+    userItem.create_time = Date() // commonUtil.dateFormat(Date())
     let newUser = UserDao(userItem)
     let result = await newUser.save()
     logger.info('addUser result : ' + JSON.stringify(result))
@@ -38,7 +41,7 @@ async function addUser (userItem) {
   }
 }
 
-async function getUser (id, returnFields) {
+async function getUser(id, returnFields) {
   logger.info('fields ' + JSON.stringify(returnFields))
   let filter = { _id: id }
   if (!returnFields) {
@@ -47,8 +50,17 @@ async function getUser (id, returnFields) {
   if (returnFields.password) {
     delete returnFields.password
   }
-  logger.info('filter :' + JSON.stringify(filter) + ' fields ' + JSON.stringify(returnFields))
+  logger.info(
+    'filter :' +
+      JSON.stringify(filter) +
+      ' fields ' +
+      JSON.stringify(returnFields)
+  )
   let user = await UserDao.findOne(filter, returnFields).lean().exec()
+  let b = 'a'
+  let c = `test.${b}`
+  let user1 = await UserDao.findOne(filter, { [c]: 1 }).exec()
+  logger.debug('user1:' + JSON.stringify(user1))
   if (user) {
     delete user.password
     return user
@@ -58,20 +70,29 @@ async function getUser (id, returnFields) {
   }
 }
 
-async function getUsers (filter, returnFields, pageNo, pageSize, orderBy) {
+async function getUsers(filter, returnFields, pageNo, pageSize, orderBy) {
   if (!returnFields) {
     returnFields = {}
   }
   if (returnFields.password) {
     delete returnFields.password
   }
-  logger.info('filter :' + JSON.stringify(filter) + ' fields ' + JSON.stringify(returnFields))
+  logger.info(
+    'filter :' +
+      JSON.stringify(filter) +
+      ' fields ' +
+      JSON.stringify(returnFields)
+  )
   logger.info('pageNo :' + pageNo + ' pageSize ' + pageSize)
-  let users = await UserDao.find(filter, returnFields).sort(orderBy)
-    .skip((parseInt(pageNo, 10) - 1) * parseInt(pageSize, 10)).limit(parseInt(pageSize, 10)).lean().exec()
+  let users = await UserDao.find(filter, returnFields)
+    .sort(orderBy)
+    .skip((parseInt(pageNo, 10) - 1) * parseInt(pageSize, 10))
+    .limit(parseInt(pageSize, 10))
+    .lean()
+    .exec()
   let count = await UserDao.countDocuments(filter).exec()
   if (users) {
-    users.forEach(user => {
+    users.forEach((user) => {
       delete user.password
     })
     let result = { total: count, list: users }
@@ -83,20 +104,19 @@ async function getUsers (filter, returnFields, pageNo, pageSize, orderBy) {
   }
 }
 
-async function updateUser (id, userReq) {
+async function updateUser(id, userReq) {
   let filter = { _id: id }
   let set = userReq
-  set.modify_time = Date()// commonUtil.dateFormat(Date())
+  set.modify_time = Date() // commonUtil.dateFormat(Date())
   let updateSet = { $set: set }
-  let result = await UserDao.updateOne(filter,
-    updateSet).exec()
+  let result = await UserDao.updateOne(filter, updateSet).exec()
   return result.ok // 1 修改成功，0 失败
 }
 
-async function deleteUser (id) {
+async function deleteUser(id) {
   let filter = { _id: id }
   let result = await UserDao.deleteOne(filter).exec()
-  logger.info('result : ' + JSON.stringify(result))// {"ok":1,"n":1,"deletedCount":1}
+  logger.info('result : ' + JSON.stringify(result)) // {"ok":1,"n":1,"deletedCount":1}
   return result.ok // 1 成功，0 失败
 }
 
@@ -106,5 +126,5 @@ module.exports = {
   getUsers: getUsers,
   updateUser: updateUser,
   deleteUser: deleteUser,
-  login: login
+  login: login,
 }

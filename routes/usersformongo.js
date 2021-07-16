@@ -7,6 +7,7 @@ const verify = require('./signverification')
 const base = require('../core/utils/base')
 const fs = require('fs')
 const path = require('path')
+const moment = require('moment')
 
 router.prefix('/users')
 
@@ -58,7 +59,7 @@ router.delete('/:id', /* verify, */ deleteUser)
  *       "message":"电话号码非法"
  *     }
  */
-async function addUser (ctx, next) {
+async function addUser(ctx, next) {
   /* let newUser = {
     username: 'test',
     password: '123458',
@@ -68,7 +69,8 @@ async function addUser (ctx, next) {
   let password = ctx.request.body.password
   let newUser = {
     username: username,
-    password: password
+    password: password,
+    location: {},
   }
   try {
     let result = await userManager.addUser(newUser)
@@ -79,22 +81,30 @@ async function addUser (ctx, next) {
   }
 }
 
-async function getUser (ctx, next) {
+async function getUser(ctx, next) {
   let id = ctx.params.id
   try {
     logger.info('getUser start ' + new Date().getMilliseconds())
     let result = await userManager.getUser(id)
     logger.info('getUser end ' + new Date().getMilliseconds())
     logger.info('result : ' + JSON.stringify(result))
-
-    testBuffer()
+    if (result.location) {
+      logger.debug(result.location)
+    } else {
+      logger.debug('location false')
+    }
+    logger.debug(result.location.Code)
+    result.time = moment(new Date(result.create_time)).format(
+      'YYYY-MM-DD HH:mm:ss'
+    )
+    // testBuffer()
     ctx.body = { code: ErrorCodes.OK, data: result, message: 'successful' }
   } catch (error) {
     ctx.throw(500, error)
   }
 }
 
-async function updateUser (ctx, next) {
+async function updateUser(ctx, next) {
   let id = ctx.params.id
   let updateSet = ctx.request.body
   try {
@@ -106,7 +116,7 @@ async function updateUser (ctx, next) {
   }
 }
 
-async function deleteUser (ctx, next) {
+async function deleteUser(ctx, next) {
   let id = ctx.params.id
   try {
     let result = await userManager.deleteUser(id)
@@ -117,7 +127,7 @@ async function deleteUser (ctx, next) {
   }
 }
 
-function testBuffer () {
+function testBuffer() {
   let handPath = path.join(__dirname, 'M001HAND.BIN')
   fs.readFile(handPath, function (err, data) {
     logger.info('err ' + err)
@@ -131,7 +141,12 @@ function testBuffer () {
       let hands = []
       let dataBuf = buf.slice(32)
       let size = dataBuf.length / 4
-      logger.info('readHANDBin size = ' + dataBuf.length + '  ' + base.buffToBoolean(dataBuf[0]))
+      logger.info(
+        'readHANDBin size = ' +
+          dataBuf.length +
+          '  ' +
+          base.buffToBoolean(dataBuf[0])
+      )
       let a = []
       for (let i = 0; i < 2; i++) {
         a[i] = dataBuf[i + 4]

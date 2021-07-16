@@ -7,10 +7,15 @@ class MemLogger {
   constructor (category) {
     this.category = category
     this.appBase = appBase
+    this.memFlag = true
   }
 
   setAppBase (src) {
     this.appBase = src || appBase
+  }
+
+  setMemVisible (flag) {
+    this.memFlag = flag
   }
 
   getLog4js () {
@@ -21,13 +26,16 @@ class MemLogger {
     let c = this.category
     if (c && c.substr(0, this.appBase.length) === this.appBase) {
       c = path.relative(this.appBase, c)
-      c =
+      this.memFlag ? c =
         '[' +
         process.pid +
-        '][mem:' +
+        ']' + '[mem:' +
         parseInt(process.memoryUsage().rss / 1024) +
         ']' +
-        c
+        c : c =
+        '[' +
+        process.pid +
+        ']' + c
     }
     return log4js.getLogger(c)
   }
